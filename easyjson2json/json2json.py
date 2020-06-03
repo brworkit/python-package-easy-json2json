@@ -56,7 +56,7 @@ class Json2Json(object):
                         for source_from_array in source_field_value:
                             result[field].append(self.analyse(
                                 template_field_value, source_from_array))
-                    elif source_field_value_type == str:
+                    elif source_field_value_type in [str, int, float]:
                         result = self.fill_property(field, source, _source_field_name)
                     else:
                         source_field_value = source[_source_field_name]                        
