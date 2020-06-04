@@ -11,8 +11,7 @@ def query_source_field_value(path, source):
                 print(f"result: {result}")
                 return result
             path.remove(key)
-        elif isinstance(result, list):
-            print(f"result is list")
+        elif isinstance(result, list):            
             result = result[0]            
             return query_source_field_value(path, result)
         else: 
