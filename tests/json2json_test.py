@@ -3,8 +3,15 @@ from easyjson2json.json2json import Json2Json
 
 def translate(template, source):           
     translator = Json2Json(template=template, source=source)
-    print(f"translate result: {translator.get_result()}")
+    print(f"RESULT: {translator.get_result()}")
     return translator.get_result()
+
+
+
+
+
+
+
 
 def test_translate_one_level_one_field_ok():    
     source = { "name": "Test Name" }    
@@ -72,16 +79,8 @@ def test_translate_array_second_level_different_source_property_name_ok():
     result = translate(template, source)
     assert result["addresses"][0]["complement"]["type"] == source["addresses"][0]["complement"]["TYPE"]
 
-
-# def test_translate_array_second_level_different_source_property_name_ok():    
-#     source = { "name": "My Name", "addresses": [{ "NUMBER": 23 }] }    
-#     template = { "name": "name", "addresses": { "number": {"_source": "NUMBER"} } }
-#     result = translate(template, source)
-#     assert result["addresses"][0]["number"] == source["addresses"][0]["NUMBER"]
-
-
-# def test_translate_one_level_multiple_fields():    
-#     source = { "name": "Test Name", "birth": "2020-06-03" }    
-#     template = { "name": "name", "birth": "2020-06-03" }
-#     result = translate(template, source)
-#     assert result["name"] == source["name"]
+def test_translate_one_level_multiple_fields():    
+    source = { "name": "Test Name", "birth": "2020-06-03" }    
+    template = { "name": "name", "birth": "birth" }
+    result = translate(template, source)
+    assert result == source

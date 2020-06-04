@@ -20,8 +20,15 @@ class Json2Json(object):
     def property_not_found(self):
         return None
 
-    def fill_property(self, field, source, _source_field_name=None):        
-        return {field: self.get_value(_source_field_name, source)}
+    def fill_property(self, field, source, _source_field_name=None):                
+        return self.get_value(_source_field_name, source)
+
+    def define_source_field_name(self, field, template):        
+        if "_source" in template[field]:
+            _source_field_name = template[field]["_source"]
+            del template[field]["_source"]
+            return _source_field_name
+        return field
 
     def analyse(self, template: dict, source: dict):
         print(f"template: {template}")
@@ -29,12 +36,8 @@ class Json2Json(object):
 
         result = {}
         for field in template:
-            _source_field_name = field
+            _source_field_name = self.define_source_field_name(field, template)
 
-            if "_source" in template[field]:
-                _source_field_name = template[field]["_source"]
-                del template[field]["_source"]
-            
             print(f"_source_field_name: {_source_field_name}")
 
             if _source_field_name not in source:
@@ -44,20 +47,17 @@ class Json2Json(object):
                 property_type = type(template_field_value)
 
                 if property_type == dict:
-                    print(f"property_type: {property_type}")
+                    # print(f"property_type: {property_type}")
                     source_field_value = source[_source_field_name]
                     source_field_value_type = type(source_field_value)
                     
-                    print(f"source_field_value: {source_field_value}")
-                    print(f"source_field_value_type: {source_field_value_type}")
-
                     if source_field_value_type == list:
                         result[field] = []
                         for source_from_array in source_field_value:
                             result[field].append(self.analyse(
                                 template_field_value, source_from_array))
                     elif source_field_value_type in [str, int, float]:
-                        result = self.fill_property(field, source, _source_field_name)
+                        result[field] = self.fill_property(field, source, _source_field_name)
                     else:
                         source_field_value = source[_source_field_name]                        
                         result[field] = self.analyse(template_field_value, source_field_value)
@@ -71,8 +71,8 @@ class Json2Json(object):
                                 result[field].append(self.analyse(
                                     array_template, source_from_array))
                         else:
-                            result = self.fill_property(field, source, _source_field_name)
+                            result[field] = self.fill_property(field, source, _source_field_name)
                 else:
-                    result = self.fill_property(field, source, _source_field_name)
+                    result[field] = self.fill_property(field, source, _source_field_name)
 
         return result
