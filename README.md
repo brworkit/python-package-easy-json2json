@@ -1,7 +1,7 @@
-# Easy JSON Validator
+# Easy JSON2JSON
     
 ## Description
-A python package for deep json translation.
+A python package for deep JSON translation.
 
 You just need to specify you template (the JSON document format you want to get from another JSON).
 
@@ -15,14 +15,14 @@ Then you specify your dreamed JSON document to extract info from the source JSON
 
 # Usage example 
 
-## Case #1 Simple Json
+## Case #1 Simple JSON
 ```python
 
 from easyjson2json import Json2Json
 
-source = {"name": "Test Name"} # source json
+source = {"name": "Test Name"} # source JSON
 
-template = {"first_name": "name"} # this is the structure you want your new json be 
+template = {"first_name": "name"} # this is the structure you want your new JSON be 
 
 translator = Json2Json(template=template, source=source)
 
@@ -39,7 +39,7 @@ print(result)
 
 from easyjson2json import Json2Json
 
-source = {"name": "Test Name", "address": {"name": "My Street", "number": 23}} # when is not a plain json
+source = {"name": "Test Name", "address": {"name": "My Street", "number": 23}} # when is not a plain JSON
 
 template = {"first_name": "name", "address_name": ["address", "name"]} # you don't want all that structure 
 
@@ -71,7 +71,7 @@ print(result)
 # {'name': 'My Name', 'address': {'name': 'My Street', 'number': 23}}
 ```
 
-## Case #4 From List in Json
+## Case #4 From List in JSON
 ```python
 
 from easyjson2json import Json2Json
