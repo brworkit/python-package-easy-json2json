@@ -1,7 +1,6 @@
 
 from easyjson2json.json2json import Json2Json
 
-
 def translate(template, source):
     translator = Json2Json(template=template, source=source)
     print(f"result: {translator.get_result()}")
