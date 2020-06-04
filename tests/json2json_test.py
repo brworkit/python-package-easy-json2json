@@ -142,4 +142,23 @@ def test_example_1():
     template = {"first_name": "name"}
     result = translate(template, source)
     assert result["first_name"] == source["name"]
-    assert result is None
+
+def test_example_2():
+    source = {"name": "Test Name", "address": {"name": "My Street", "number": 23}} # when is not a plain json
+    template = {"first_name": "name", "address_name": ["address", "name"]} # you don't want all that structure
+    result = translate(template, source)
+    assert result["first_name"] == source["name"]
+
+def test_example_3():
+    source = {"name": "My Name", "ADDRESS": {"name": "My Street", "number": 23}} # ugly JSON happens 
+    template = {"name": "name", "address": {"_source": "ADDRESS", "name": "name", "number": "number"}} # you want beautiful JSON
+    result = translate(template, source)
+    assert result["address"]["name"] == source["ADDRESS"]["name"]
+    assert result["address"]["number"] == source["ADDRESS"]["number"]
+    
+def test_example_4():
+    source = {"name": "My Name", "addresses": [{"name": "My Street", "number": 23}]}
+    template = {"name": "name", "addresses": {"name": "name", "number": "number"}}
+    result = translate(template, source)
+    assert result["addresses"][0]["name"] == source["addresses"][0]["name"]
+    assert result["addresses"][0]["number"] == source["addresses"][0]["number"]

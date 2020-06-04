@@ -12,9 +12,12 @@ class Json2Json(object):
         return self.__translated
 
     def _translate(self):
-        self.__translated = self._analyse(self.__template, self.__source)
-        return self.__translated
-
+        try:
+            self.__translated = self._analyse(self.__template, self.__source)
+            return self.__translated
+        except Exception as e:
+            raise Exception("Some unexpected error happend. I'll fix that soon. Tell me on Github, please.")
+        
     def _get_source_field_name(self, field, template):        
         if "_source" in template[field]:            
             return template[field].pop("_source")
