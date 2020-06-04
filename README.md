@@ -1,10 +1,10 @@
 # Easy JSON Validator
     
 ## Description
-A python package for deep json parse.
+A python package for deep json translation.
 
 # Install 
-    pip install easy-json-validator
+    pip install easy-json2json
 
 # Usage example 
 
