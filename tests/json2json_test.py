@@ -102,15 +102,29 @@ def test_translate_second_level_multiple_fields_in_deep_different_source_propert
     assert result["category"]["name"] == source["CATEGORY"]["nAmE"]
     assert result["category"]["factory"]["name"] == source["CATEGORY"]["FACTORY"]["nAmE"]
 
-def test_translate_fucking_deep_level_ok():       
-    # Kingdom
-    # Phylum
-    # Class
-    # Order
-    # Family
-    # Genus
-    # Species    
+def test_translate_fucking_deep_level_ok():               
     source = { "kingdom": {"phylum": { "class": { "order": { "family": { "genus": { "species": ["MAMALS"] } } } } }} }    
     template = { "species": ["kingdom", "phylum", "class", "order", "family", "genus", "species"] }
     result = translate(template, source)
     assert result["species"] == ["MAMALS"]
+
+def test_translate_complex_case_ok():               
+    source = {
+        "result": [
+            {
+                "certificates": [
+                    {
+                        "origin": "RECITA FEDERAL"
+                    }
+                ]
+            }
+        ]
+    }
+
+    template = { "source": ["result", "certificates", "origin"] }
+
+    result = translate(template, source)
+
+    assert result["source"] == "RECITA FEDERAL"
+
+
