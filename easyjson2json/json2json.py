@@ -28,8 +28,15 @@ class Json2Json(object):
             _source_field_name = template[field]["_source"]
             del template[field]["_source"]
             return _source_field_name
-        if isinstance(template[field], dict) or isinstance(template[field], list):
-            return field
+        else:
+            array = field.split("|")
+            if len(array) > 1:
+                key = array[0]
+                template[key] = template.pop(field)
+                field = key
+                return array[1]
+            if isinstance(template[field], dict) or isinstance(template[field], list):
+                return field
         return template[field]
     
     def query_source_field_value(self, path, source):        
@@ -48,7 +55,7 @@ class Json2Json(object):
         return None 
 
 
-    def special_case(self, field, source, source_field_value, source_field_value_type, template_field_value, _source_field_name):        
+    def special_case(self, field, source, source_field_value, source_field_value_type, template_field_value, _source_field_name):                
         if source_field_value_type == list:
             result = []
             for source_from_array in source_field_value:
@@ -59,24 +66,30 @@ class Json2Json(object):
         else:
             source_field_value = source[_source_field_name]                        
             return self.analyse(template_field_value, source_field_value)
-        
+    
+    def extract_model(self, field, source):
+        _model = source[field]["_model"] if "_model" in source[field] else None
+        if _model:
+            del source[field]["_model"]
+        return _model
+
     def analyse(self, template: dict, source: dict):        
         result = {}
         for field in template:            
             if template[field] is None:
                 result[field] = None
             else:
-                _source_field_name = self.define_source_field_name(field, template)
+                _source_field_name = self.define_source_field_name(field, template)                
                 print(f"field: {field}")
                 print(f"_source_field_name: {_source_field_name}")            
                 template_field_value = template[field]
                 template_property_type = type(template_field_value)            
-                print(f"template_property_type: {template_property_type}")            
+                print(f"template_property_type: {template_property_type}")
                 if template_property_type == dict:                    
                     source_field_value = source[_source_field_name]
                     source_field_value_type = type(source_field_value)                                
                     result[field] = self.special_case(field, source, source_field_value, source_field_value_type, template_field_value, _source_field_name)
-                elif template_property_type == list:
+                elif template_property_type == list:                                            
                     source_field_value = self.query_source_field_value(template_field_value, source)                
                     result[field] = source_field_value
                 elif template_property_type == str:

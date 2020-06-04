@@ -57,7 +57,8 @@ source = {
         {
             "certificates": [
                 {
-                    "origin": "RECITA FEDERAL"
+                    "origin": "RECITA FEDERAL",
+                    "street": "Street Name"
                 }
             ]
         }
@@ -65,7 +66,8 @@ source = {
 }    
 
 template = {
-    "source": "result.certificates.origin"
+    "source": "result.certificates.origin",
+    "address": "result.certificates.street"
 }
 
 result = translate(template, source)
