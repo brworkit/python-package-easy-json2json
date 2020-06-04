@@ -22,27 +22,27 @@ class Json2Json(object):
 
     def define_source_field_name(self, field, template):        
         if "_source" in template[field]:
-            _source_field_name = template[field]["_source"]
+            result = template[field]["_source"]
             del template[field]["_source"]
-            return _source_field_name
+            return result
         else:            
-            if isinstance(template[field], dict) or isinstance(template[field], list):
-                return field
+            if type(template[field]) in [dict, list]:
+                return field                
         return template[field]
     
     def query_field_value(self, path, source):        
         result = dict(source)
         for key in list(path):                    
-            if isinstance(result, dict) and key in dict(result):
-                result = result[key]                        
+            if isinstance(result, dict) and key in result:                
                 if key == path[-1]:                    
-                    return result
-                path.remove(key)
-            elif isinstance(result, list):                
-                result = result[0]            
-                return self.query_field_value(path, result)
+                    return result[key]
+                else:
+                    result = result[key]
+                    path.remove(key)
+            elif isinstance(result, list):                                            
+                return self.query_field_value(path, result[0])
             else: 
-                break
+                return None
         return None 
 
     def read_list(self, template_field_value, source_field_value):
@@ -52,22 +52,22 @@ class Json2Json(object):
         return result
 
     def template_is_dict(self, field, template, source):
-        source_field_name = self.define_source_field_name(field, template)
-        source_field_value = source[source_field_name]
-        source_field_value_type = type(source_field_value)                                                            
-        if source_field_value_type in [str, int, float]:
+        source_field_name = self.define_source_field_name(field, template)                
+        if type(source[source_field_name]) in [str, int, float]:
             return self.fill_property(field, source, source_field_name)
         
         template_field_value = template[field]
-        if source_field_value_type == list:
-            return self.read_list(template_field_value, source_field_value)
+        if type(source[source_field_name]) == list:
+            return self.read_list(template_field_value, source[source_field_name])
                                                                 
-        return self.analyse(template_field_value, source_field_value)
+        return self.analyse(template_field_value, source[source_field_name])
 
-    def template_is_list(self, field, template, source):
-        template_field_value = template[field]
-        template_property_type = type(template_field_value)  
-        return self.query_field_value(template_field_value, source)                        
+    def template_is_list(self, field, template, source):        
+        return self.query_field_value(template[field] , source)
+
+    def template_is_str(self, field, template, source):        
+        source_field_name = self.define_source_field_name(field, template)
+        return self.fill_property(field, source, source_field_name)
 
     def analyse(self, template, source):                
         result = {}
@@ -82,8 +82,7 @@ class Json2Json(object):
                 elif template_property_type == list:                                                                
                     result[field] = self.template_is_list(field, template, source)
                 elif template_property_type == str:
-                    source_field_name = self.define_source_field_name(field, template)
-                    result[field] = self.fill_property(field, source, source_field_name)
+                    result[field] = self.template_is_str(field, template, source)
         return result
 
      
