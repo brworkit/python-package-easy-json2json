@@ -28,7 +28,7 @@ class Json2Json(object):
             _source_field_name = template[field]["_source"]
             del template[field]["_source"]
             return _source_field_name
-        if isinstance(template[field], dict):
+        if isinstance(template[field], dict) or isinstance(template[field], list):
             return field
         return template[field]
     
