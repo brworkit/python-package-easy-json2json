@@ -5,9 +5,10 @@ A python package for deep JSON translation.
 
 You just need to specify you template (the JSON document format you want to get from another JSON).
 
-*Real situation where you can use it:*
-Sometimes you have to use some API that sends you some mal-formed JSON. It's not a JSON you want to show to your end user or 
-it's not the JSON you want to save in a non relational database.
+**Real situation where you can use it:**
+
+Sometimes you have to use some API that sends you some mal-formed JSON. 
+It's not a JSON you want to show to your end user or it's not the JSON you want to save in a non relational database.
 Then you specify your dreamed JSON document to extract info from the source JSON you received.
 
 # Install 
