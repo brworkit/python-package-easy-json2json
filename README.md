@@ -3,7 +3,7 @@
 ## Description
 A python package for deep JSON translation.
 
-You just need to specify you template to get all data from another JSON avoiding doing that manually in your code.
+You just need to specify you template to get all data from another JSON to avoid doing that manually in your code.
 
 # Install 
     pip install easy-json2json
