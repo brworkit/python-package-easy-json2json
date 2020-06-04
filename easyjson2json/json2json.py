@@ -3,17 +3,17 @@ from easyjson2json.helpers import *
 class Json2Json(object):
     def __init__(self, template, source):
         super().__init__()
-        self.template = template
-        self.source = source
-        self.translated = None
+        self.__template = template
+        self.__source = source
+        self.__translated = None
         self.translate()
-        
-    def translate(self):
-        self.translated = self.analyse(self.template, self.source)
-        return self.translated
 
     def get_result(self):
-        return self.translated
+        return self.__translated
+
+    def translate(self):
+        self.__translated = self.analyse(self.__template, self.__source)
+        return self.__translated
 
     def get_field_name(self, field, template):        
         if "_source" in template[field]:            
