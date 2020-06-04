@@ -51,6 +51,20 @@ class Json2Json(object):
             result.append(self.analyse(template_field_value, source_from_array))
         return result
 
+
+    def solve_when_template_is_dict(self, field, template, source):
+        source_field_name = self.define_source_field_name(field, template)
+        source_field_value = source[source_field_name]
+        source_field_value_type = type(source_field_value)                                                    
+        if source_field_value_type == list:
+            template_field_value = template[field]                        
+            return self.read_list(template_field_value, source_field_value)
+        elif source_field_value_type in [str, int, float]:
+            return self.fill_property(field, source, source_field_name)
+        else:                                     
+            template_field_value = template[field]           
+            return self.analyse(template_field_value, source_field_value)
+
     def analyse(self, template: dict, source: dict):        
         
         result = {}
@@ -58,22 +72,16 @@ class Json2Json(object):
             if template[field] is None:
                 result[field] = None
             else:
-                source_field_name = self.define_source_field_name(field, template)                                
+                # source_field_name = self.define_source_field_name(field, template)                                
                 template_field_value = template[field]
                 template_property_type = type(template_field_value)                            
-                if template_property_type == dict:                    
-                    source_field_value = source[source_field_name]
-                    source_field_value_type = type(source_field_value)                                                    
-                    if source_field_value_type == list:                        
-                        result[field] = self.read_list(template_field_value, source_field_value)
-                    elif source_field_value_type in [str, int, float]:
-                        result[field] = self.fill_property(field, source, source_field_name)
-                    else:                                                
-                        result[field] = self.analyse(template_field_value, source_field_value)
+                if template_property_type == dict:
+                    result[field] = self.solve_when_template_is_dict(field, template, source)
                 elif template_property_type == list:                                            
                     source_field_value = self.query_field_value(template_field_value, source)                
                     result[field] = source_field_value
                 elif template_property_type == str:
+                    source_field_name = self.define_source_field_name(field, template)
                     result[field] = self.fill_property(field, source, source_field_name)
         return result
 
