@@ -9,15 +9,17 @@ def translate(template, source):
 
 
 
-
-
-
-
 def test_translate_one_level_one_field_ok():    
     source = { "name": "Test Name" }    
     template = { "name": "name" }
     result = translate(template, source)
     assert result["name"] == source["name"]
+
+def test_translate_one_level_source_missing_field_ok():    
+    source = { "name": "Test Name" }    
+    template = { "age": "age" }
+    result = translate(template, source)
+    assert result["age"] is None
 
 def test_translate_one_level_one_field_with_source_specified_ok():    
     source = { "NAME": "Test Name" }    
@@ -79,8 +81,36 @@ def test_translate_array_second_level_different_source_property_name_ok():
     result = translate(template, source)
     assert result["addresses"][0]["complement"]["type"] == source["addresses"][0]["complement"]["TYPE"]
 
-def test_translate_one_level_multiple_fields():    
+def test_translate_one_level_multiple_fields_ok():    
     source = { "name": "Test Name", "birth": "2020-06-03" }    
     template = { "name": "name", "birth": "birth" }
     result = translate(template, source)
     assert result == source
+
+def test_translate_second_level_multiple_fields_in_deep_ok():    
+    source = { "game": {"name": "Test Name", "details": {"type": "2D GAME"}}, "category": {"name": "Category Name", "factory": {"name": "Brworkit Games"}} }    
+    template = { "game": {"name": "name", "details": {"type": "type"}}, "category": {"name": "name", "factory": {"name": "name"}} }
+    result = translate(template, source)
+    assert result == source
+
+def test_translate_second_level_multiple_fields_in_deep_different_source_property_name_ok():    
+    source = { "GAME": {"nAmE": "Test Name", "DETAILS": {"TYPE": "2D GAME"}}, "CATEGORY": {"nAmE": "Category Name", "FACTORY": {"nAmE": "Brworkit Games"}} }    
+    template = { "game": {"_source": "GAME", "name": {"_source": "nAmE"}, "details": {"_source": "DETAILS", "type": {"_source": "TYPE"}}}, "category": {"_source": "CATEGORY", "name": {"_source": "nAmE"}, "factory": {"_source": "FACTORY", "name": {"_source": "nAmE"}}} }
+    result = translate(template, source)
+    assert result["game"]["name"] == source["GAME"]["nAmE"]
+    assert result["game"]["details"]["type"] == source["GAME"]["DETAILS"]["TYPE"]
+    assert result["category"]["name"] == source["CATEGORY"]["nAmE"]
+    assert result["category"]["factory"]["name"] == source["CATEGORY"]["FACTORY"]["nAmE"]
+
+def test_translate_fucking_deep_level_ok():       
+    # Kingdom
+    # Phylum
+    # Class
+    # Order
+    # Family
+    # Genus
+    # Species    
+    source = { "kingdom": {"phylum": { "class": { "order": { "family": { "genus": { "species": ["MAMALS"] } } } } }} }    
+    template = { "species": ["kingdom", "phylum", "class", "order", "family", "genus", "species"] }
+    result = translate(template, source)
+    assert result["species"] == ["MAMALS"]
