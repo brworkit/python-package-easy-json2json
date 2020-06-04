@@ -36,13 +36,13 @@ def test_translate_second_level_one_field_ok():
     result = translate(template, source)
     assert result["address"]["number"] == source["address"]["number"]
 
-def test_translate_second_level_one_field_differente_source_property_name_ok():    
+def test_translate_second_level_one_field_different_source_property_name_ok():    
     source = { "name": "My Name", "ADDRESS": { "number": 23 } }    
     template = { "name": "name", "address": { "_source": "ADDRESS", "number": "number" } }
     result = translate(template, source)
     assert result["address"]["number"] == source["ADDRESS"]["number"]
 
-def test_translate_second_level_one_field_differente_source_property_name_deep_ok():    
+def test_translate_second_level_one_field_different_source_property_name_deep_ok():    
     source = { "name": "My Name", "ADDRESS": { "NUMBER": 23 } }    
     template = { "name": "name", "address": { "_source": "ADDRESS", "number": {"_source": "NUMBER"} } }
     result = translate(template, source)
@@ -53,6 +53,32 @@ def test_translate_array_one_level_ok():
     template = { "name": "name", "addresses": { "number": "number" } }
     result = translate(template, source)
     assert result["addresses"][0]["number"] == source["addresses"][0]["number"]
+
+def test_translate_array_one_level_different_source_property_name_ok():    
+    source = { "name": "My Name", "addresses": [{ "NUMBER": 23 }] }    
+    template = { "name": "name", "addresses": { "number": {"_source": "NUMBER"} } }
+    result = translate(template, source)
+    assert result["addresses"][0]["number"] == source["addresses"][0]["NUMBER"]
+
+def test_translate_array_second_level_ok():    
+    source = { "name": "My Name", "addresses": [{ "complement": {"type": "HOUSE"} }] }    
+    template = { "name": "name", "addresses": { "complement": {"type": "type"} } }
+    result = translate(template, source)
+    assert result["addresses"][0]["complement"]["type"] == source["addresses"][0]["complement"]["type"]
+
+def test_translate_array_second_level_different_source_property_name_ok():    
+    source = { "name": "My Name", "addresses": [{ "complement": {"TYPE": "HOUSE"} }] }    
+    template = { "name": "name", "addresses": { "complement": {"type": {"_source": "TYPE"}} } }
+    result = translate(template, source)
+    assert result["addresses"][0]["complement"]["type"] == source["addresses"][0]["complement"]["TYPE"]
+
+
+# def test_translate_array_second_level_different_source_property_name_ok():    
+#     source = { "name": "My Name", "addresses": [{ "NUMBER": 23 }] }    
+#     template = { "name": "name", "addresses": { "number": {"_source": "NUMBER"} } }
+#     result = translate(template, source)
+#     assert result["addresses"][0]["number"] == source["addresses"][0]["NUMBER"]
+
 
 # def test_translate_one_level_multiple_fields():    
 #     source = { "name": "Test Name", "birth": "2020-06-03" }    
