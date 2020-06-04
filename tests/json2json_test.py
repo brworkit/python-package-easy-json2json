@@ -4,7 +4,7 @@ from easyjson2json.json2json import Json2Json
 
 def translate(template, source):
     translator = Json2Json(template=template, source=source)
-    print(f"RESULT: {translator.get_result()}")
+    print(f"result: {translator.get_result()}")
     return translator.get_result()
 
 def test_translate_one_level_one_field_ok():
@@ -137,3 +137,9 @@ def test_translate_deep_levels_from_array_ok():
     assert result["source"] == "This is the third level"
 
 
+def test_example_1():
+    source = {"name": "Test Name"}
+    template = {"first_name": "name"}
+    result = translate(template, source)
+    assert result["first_name"] == source["name"]
+    assert result is None

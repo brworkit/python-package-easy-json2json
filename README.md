@@ -8,22 +8,22 @@ A python package for deep json translation.
 
 # Usage example 
 
-## Success Case
+## Case #1
 ```python
 
-from easyjson2json import JsonValidator
+from easyjson2json import Json2Json
 
-source = {"name": "My Name", "birth": "2000-01-01", "salary": 1000} # your json
+source = {"name": "Test Name"} # your json
 
-template = {"name": ["NotNull"]} # what you want to test 
+template = {"first_name": "name"} # this is the structure you want your new json be 
 
-validator = JsonValidator(template=template, source=source)       
+translator = Json2Json(template=template, source=source)
 
-result = validator.validate()       
+result = translator.get_result()       
 
-print(f"result: {result}")
+print(result)
 
-# result: {'name': {'value': "My Name", 'rules': ['NotNull'], 'validations': {'NotNull': {'status': 'OK'}}}}
+# {'first_name': 'Test Name'}
 
 ```
 
