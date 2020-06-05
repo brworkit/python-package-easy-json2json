@@ -85,10 +85,8 @@ print(result)
 
 ```
 
-
-## Source Code
-
-[easyjson2json](https://github.com/brworkit/python-package-easy-json2json.git)
+## PyPi
+[easy-json2json] https://pypi.org/project/easy-json2json/
 
 ## Author
 
