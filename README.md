@@ -86,7 +86,8 @@ print(result)
 ```
 
 ## PyPi
-[easy-json2json] https://pypi.org/project/easy-json2json/
+
+[easy-json2json](https://pypi.org/project/easy-json2json)
 
 ## Author
 
