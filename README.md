@@ -93,3 +93,6 @@ print(result)
 ## Author
 
 [**2020 brworkit**](https://github.com/brworkit).
+
+## License
+[MIT License.](https://opensource.org/licenses/MIT)    
